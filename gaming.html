@@ -1,0 +1,574 @@
+```html
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>Gaming Archive | ArdyProject</title>
+    <meta name="description" content="Dokumentasi pelarian digital ArdyProject. Daftar game, cuplikan video, dan spesifikasi minimum.">
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-base: #0a0a0a;
+            --accent: #00d2ff; 
+            --accent-glow: rgba(0, 210, 255, 0.3);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'VT323', monospace; 
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-base); color: var(--text-main);
+            font-family: var(--font-body); font-size: 0.95rem; 
+            overflow-x: hidden; width: 100%; cursor: none; line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6, .nav-link, .navbar-brand { font-family: var(--font-heading); letter-spacing: 0.5px; }
+        a { text-decoration: none; color: var(--accent); transition: 0.3s ease; }
+        a:hover { color: #fff; cursor: none; }
+
+        /* Custom Cursor */
+        .cursor-dot, .cursor-outline { position: fixed; top: 0; left: 0; transform: translate(-50%, -50%); border-radius: 50%; z-index: 9999; pointer-events: none; }
+        .cursor-dot { width: 4px; height: 4px; background-color: var(--accent); }
+        .cursor-outline { width: 30px; height: 30px; border: 1px solid rgba(0, 210, 255, 0.5); transition: width 0.15s, height 0.15s; }
+        #canvas-particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.2; pointer-events: none; }
+
+        /* Navbar & Mobile Menu */
+        .navbar { background: rgba(10, 10, 10, 0.9) !important; backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-color); padding: 12px 0; transition: all 0.3s ease; }
+        .navbar-brand { color: #fff !important; font-weight: 700; font-size: 1.2rem; letter-spacing: 2px; display: flex; align-items: center; gap: 10px; position: relative; z-index: 1060; }
+        .navbar-brand span { color: var(--accent); }
+        .nav-logo-img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+        .desktop-menu .nav-link { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted) !important; padding: 0.5rem 1rem !important;}
+        .desktop-menu .nav-link.active { color: var(--accent) !important; }
+        .desktop-menu .nav-link:hover { color: #fff !important; }
+
+        .hamburger-btn { width: 30px; height: 20px; position: relative; z-index: 1060; cursor: none; display: flex; flex-direction: column; justify-content: space-between; background: transparent; border: none; padding: 0; }
+        .hamburger-btn span { display: block; width: 100%; height: 2px; background: #fff; border-radius: 2px; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .hamburger-btn.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); background: var(--accent); }
+        .hamburger-btn.active span:nth-child(2) { opacity: 0; transform: translateX(20px); }
+        .hamburger-btn.active span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); background: var(--accent); }
+
+        .mobile-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(15px); z-index: 1050; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease; }
+        .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
+        .close-menu-btn { position: absolute; top: 20px; right: 25px; background: transparent; border: none; color: #fff; font-size: 2.2rem; cursor: none; transition: color 0.3s, transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1061; padding: 10px; }
+        .close-menu-btn:hover { color: var(--accent); transform: scale(1.1) rotate(90deg); }
+        .mobile-nav-list { list-style: none; padding: 0; margin: 0; text-align: center; }
+        .mobile-nav-list li { margin-bottom: 25px; transform: translateX(50px); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .mobile-menu-overlay.active .mobile-nav-list li { transform: translateX(0); opacity: 1; }
+        .mobile-nav-list a { font-family: var(--font-heading); font-size: 1.5rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 2px; position: relative; }
+        .mobile-nav-list a.active, .mobile-nav-list a:hover { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+
+        /* Glitch Effect */
+        .glitch-wrapper { position: relative; display: inline-block; }
+        .glitch { font-size: 3.2rem; font-weight: 700; color: white; position: relative; margin-bottom: 0; letter-spacing: 1px;}
+        .glitch:hover { animation: glitch 500ms infinite; }
+        .glitch:hover::before, .glitch:hover::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent; }
+        .glitch:hover::before { left: 2px; text-shadow: -1px 0 red; clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%); animation: glitch-anim 2.5s infinite linear alternate-reverse; }
+        .glitch:hover::after { left: -2px; text-shadow: -1px 0 var(--accent); clip-path: polygon(0 80%, 100% 20%, 100% 100%, 0 100%); animation: glitch-anim2 3s infinite linear alternate-reverse; }
+        @keyframes glitch { 0% { text-shadow: 0.02em 0 0 rgba(255,0,0,0.5), -0.02em -0.01em 0 rgba(0,255,255,0.5); } 50% { text-shadow: -0.02em -0.01em 0 rgba(255,0,0,0.5), 0.01em 0.01em 0 rgba(0,255,255,0.5); } 100% { text-shadow: 0.01em 0.02em 0 rgba(255,0,0,0.5), 0.02em 0 0 rgba(0,255,255,0.5); } }
+
+        /* Backgrounds */
+        header { position: relative; z-index: 1; min-height: 50vh; padding-top: 120px; display: flex; align-items: center; }
+        section { position: relative; z-index: 1; padding-top: 3rem; padding-bottom: 5rem; }
+        header::before, section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; background-attachment: fixed; z-index: -2; opacity: 0.4; }
+        header::after, section::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, rgba(10, 10, 10, 0.9) 0%, rgba(10, 10, 10, 0.6) 50%, rgba(10, 10, 10, 0.9) 100%); z-index: -1; }
+        
+        header::before { background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2000&auto=format&fit=crop'); }
+        #archive-section::before { background-image: url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=2000&auto=format&fit=crop'); }
+        .container { position: relative; z-index: 2; }
+        
+        /* ========================================================= */
+        /* 🚀 DOSSIER / SCRAPBOOK CARD STYLES                        */
+        /* ========================================================= */
+        
+        .masonry-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 40px 30px; padding: 20px 0; }
+
+        .scrap-card {
+            background: #151515; padding: 20px 20px 30px 20px; position: relative;
+            box-shadow: 5px 15px 30px rgba(0,0,0,0.8); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            clip-path: polygon(0% 0%, 100% 0%, 100% 98%, 97% 100%, 93% 98%, 89% 100%, 85% 98%, 80% 100%, 75% 98%, 70% 100%, 65% 98%, 60% 100%, 55% 98%, 50% 100%, 45% 98%, 40% 100%, 35% 98%, 30% 100%, 25% 98%, 20% 100%, 15% 98%, 10% 100%, 5% 98%, 0% 100%);
+        }
+
+        .scrap-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1); border-top: 3px solid var(--accent); pointer-events: none; z-index: 2;
+        }
+
+        .cyber-tape {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+            width: 120px; height: 35px; background: rgba(0, 210, 255, 0.15); border: 1px solid rgba(0, 210, 255, 0.3);
+            backdrop-filter: blur(5px); z-index: 3; box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+
+        /* 📸 MEDIA FRAME & TOMBOL TONTON VIDEO */
+        .media-frame {
+            width: 100%; height: 220px; background: #000; border: 1px solid #333; margin-bottom: 20px; 
+            overflow: hidden; position: relative; border-radius: 4px;
+        }
+        .media-frame img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(50%) contrast(110%); transition: 0.5s ease; }
+        
+        .overlay-play {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s ease; backdrop-filter: blur(2px);
+        }
+        
+        .btn-clean {
+            background: rgba(18,18,18,0.9); color: #fff; font-family: var(--font-heading); font-size: 0.85rem;
+            border: 1px solid var(--border-color); padding: 12px 25px; border-radius: 4px; transition: all 0.3s ease;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-clean:hover { border-color: var(--accent); color: var(--accent); transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 210, 255, 0.4); }
+
+        /* Teks Info Game */
+        .doc-label { font-family: var(--font-mono); color: var(--accent); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 5px; display: block; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 5px;}
+        .game-title { font-family: var(--font-heading); color: #fff; font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+        .game-desc { font-family: var(--font-mono); color: #ccc; font-size: 1.1rem; line-height: 1.5; margin-bottom: 0; }
+        
+        .status-stamp {
+            position: absolute; top: 30px; right: 10px; font-family: var(--font-mono); font-size: 1.2rem; font-weight: bold;
+            text-transform: uppercase; border: 2px solid; padding: 2px 10px; border-radius: 4px; transform: rotate(15deg); opacity: 0.7; z-index: 5; letter-spacing: 2px; pointer-events: none;
+        }
+        .stamp-active { color: #00d2ff; border-color: #00d2ff; }
+        .stamp-cleared { color: #00ff66; border-color: #00ff66; }
+
+        /* ⚙️ ACCORDION SPESIFIKASI (TEMA TERMINAL/HACKER) */
+        .spec-accordion { margin-top: 15px; --bs-accordion-bg: transparent; --bs-accordion-border-width: 1px; --bs-accordion-border-color: rgba(255, 255, 255, 0.1); }
+        .spec-btn { background: rgba(0,0,0,0.4); color: var(--accent); font-family: var(--font-mono); font-size: 1.1rem; border-radius: 4px !important; box-shadow: none !important; padding: 10px 15px; letter-spacing: 1px; border: 1px solid rgba(0, 210, 255, 0.2); cursor: pointer;}
+        .spec-btn:not(.collapsed) { background: rgba(0, 210, 255, 0.1); color: #fff; border-color: var(--accent); }
+        .spec-btn::after { filter: invert(1) opacity(0.5); transform: scale(0.8); }
+        .spec-btn:not(.collapsed)::after { filter: invert(0.5) sepia(1) saturate(5) hue-rotate(175deg); }
+        .spec-body { background: rgba(5,5,5,0.9); font-family: var(--font-mono); color: #aaa; font-size: 1rem; border-top: 1px dashed rgba(255,255,255,0.1); padding: 15px; }
+        .spec-body ul { list-style-type: none; padding-left: 0; margin-bottom: 0; }
+        .spec-body li { margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 6px; display: flex; }
+        .spec-body li strong { color: var(--accent); width: 80px; flex-shrink: 0;}
+
+        /* Cyberpunk Modal Video */
+        .modal-content.cyber-modal {
+            background-color: #0a0a0a; border: 1px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2); border-radius: 8px; overflow: hidden;
+        }
+        .cyber-modal .modal-header { border-bottom: 1px dashed rgba(0, 210, 255, 0.3); padding: 15px 20px; }
+        .cyber-modal .modal-title { font-family: var(--font-mono); color: var(--accent); letter-spacing: 2px; }
+        .cyber-modal .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
+        /* Rotasi Acak Kertas & Hover Effects */
+        .masonry-grid > div:nth-child(odd) .scrap-card { transform: rotate(-2deg); }
+        .masonry-grid > div:nth-child(even) .scrap-card { transform: rotate(2deg); }
+        .masonry-grid > div:hover .scrap-card { transform: rotate(0deg) scale(1.02) translateY(-5px); z-index: 10; box-shadow: 0 20px 40px rgba(0, 210, 255, 0.2); background: #1a1a1a; }
+        .masonry-grid > div:hover .media-frame img { filter: grayscale(0%) contrast(100%); transform: scale(1.05); }
+        .masonry-grid > div:hover .overlay-play { opacity: 1; }
+        .masonry-grid > div:hover .cyber-tape { background: rgba(0, 210, 255, 0.3); border-color: var(--accent); }
+
+        .icon-box-footer { display: inline-flex; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.05); align-items: center; justify-content: center; color: var(--text-muted); transition: 0.3s; border: 1px solid transparent; }
+        .icon-box-footer:hover { background: rgba(0, 210, 255, 0.1); color: var(--accent); border-color: var(--accent); transform: translateY(-3px); }
+
+        @media (max-width: 991px) { .desktop-menu { display: none !important; } }
+        @media (max-width: 768px) {
+            .glitch { font-size: 2.2rem; }
+            header::before, section::before { background-attachment: scroll !important; }
+            .masonry-grid > div:nth-child(odd) .scrap-card, .masonry-grid > div:nth-child(even) .scrap-card { transform: rotate(0deg); }
+            .masonry-grid { gap: 30px 15px; }
+            .scrap-card { padding: 15px; }
+            .overlay-play { opacity: 1; background: rgba(0,0,0,0.2); } /* Di mobile tombol play selalu muncul */
+        }
+    </style>
+</head>
+<body data-bs-theme="dark">
+
+    <div class="cursor-dot d-none d-md-block"></div>
+    <div class="cursor-outline d-none d-md-block"></div>
+    <canvas id="canvas-particles"></canvas>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu-overlay" id="mobileNav">
+        <button class="close-menu-btn" onclick="toggleMobileMenu()" aria-label="Tutup menu"><i class="fa-solid fa-xmark"></i></button>
+        <ul class="mobile-nav-list">
+            <li style="transition-delay: 0.1s;"><a href="index.html" class="nav-link-mobile">Home</a></li>
+            <li style="transition-delay: 0.2s;"><a href="setup.html" class="nav-link-mobile">Setup & Gear</a></li>
+            <li style="transition-delay: 0.3s;"><a href="gaming.html" class="nav-link-mobile active">Gaming Log</a></li>
+        </ul>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand" href="index.html">
+                <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&w=100&q=80" alt="Logo ArdyProject" class="nav-logo-img">
+                ARDY<span>PROJECT</span>
+            </a>
+            <ul class="navbar-nav desktop-menu d-flex flex-row gap-3 m-0">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="setup.html">Setup & Gear</a></li>
+                <li class="nav-item"><a class="nav-link active" href="gaming.html">Gaming Log</a></li>
+            </ul>
+            <button class="hamburger-btn d-lg-none" id="hamburgerBtn" aria-label="Toggle menu" onclick="toggleMobileMenu()">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8" data-aos="fade-up" data-aos-duration="1000">
+                    <p class="text-accent small font-heading mb-2" style="color: var(--accent); letter-spacing: 1px;">Sistem Hiburan & Relaksasi</p>
+                    <div class="glitch-wrapper mb-3">
+                        <h1 class="glitch" data-text="GAMING_DOSSIER">GAMING_DOSSIER</h1>
+                    </div>
+                    <p class="text-muted mb-4 mx-auto" style="max-width: 600px; font-size: 1.05rem; line-height: 1.7;">
+                        Dokumen rahasia yang berisi log pelarian digital. Ulasan pribadi, tangkapan layar aksi, dan spesifikasi tempur yang dibutuhkan untuk mengeksekusinya.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gaming Scrapbook Section -->
+    <section id="archive-section">
+        <div class="container">
+            <div class="masonry-grid">
+                
+                <!-- ============================================== -->
+                <!-- GAME 1: POINT BLANK (Format Video MP4 Lokal)   -->
+                <!-- ============================================== -->
+                <div data-aos="fade-up" data-aos-delay="0">
+                    <div class="scrap-card">
+                        <div class="cyber-tape"></div>
+                        <div class="status-stamp stamp-active">ACTIVE</div>
+                        
+                        <!-- 📸 THUMBNAIL (Unsplash Placeholder) -->
+                        <div class="media-frame">
+                            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop" alt="Point Blank Thumbnail">
+                            <div class="overlay-play">
+                                <!-- Trigger Modal Video -->
+                                <button class="btn-clean" data-bs-toggle="modal" data-bs-target="#modalVideoPB">
+                                    <i class="fa-solid fa-play text-accent"></i> Tonton Video
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <span class="doc-label">FILE_ID: PB-ZEPETTO // FPS TACTICAL</span>
+                        <h3 class="game-title">POINT BLANK</h3>
+                        <p class="game-desc">
+                            &gt; MAIN WEAPON: Kriss S.V / P90 Ext.<br>
+                            &gt; MAP FAV: Burning Hall & Luxville.<br>
+                            &gt; LOG: Game legendaris era warnet yang gak pernah mati. Tempat pelarian paling asik buat Deathmatch barbar kalau logika coding lagi macet.
+                        </p>
+
+                        <!-- ⚙️ DROPDOWN SPESIFIKASI -->
+                        <div class="accordion spec-accordion" id="acc-pb">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed spec-btn" type="button" data-bs-toggle="collapse" data-bs-target="#col-pb">
+                                        <i class="fa-solid fa-microchip me-2"></i> CEK SPESIFIKASI MINIMUM
+                                    </button>
+                                </h2>
+                                <div id="col-pb" class="accordion-collapse collapse" data-bs-parent="#acc-pb">
+                                    <div class="accordion-body spec-body">
+                                        <ul>
+                                            <li><strong>OS</strong> : Windows 7 / 8 / 10</li>
+                                            <li><strong>CPU</strong> : Core 2 Duo E6600 / AMD Phenom X3</li>
+                                            <li><strong>RAM</strong> : 4 GB</li>
+                                            <li><strong>VGA</strong> : GeForce GTS 450 / Radeon HD 5770</li>
+                                            <li><strong>STORAGE</strong> : 10 GB Available Space</li>
+                                            <li><strong>DIRECTX</strong>: Version 9.0c</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- GAME 2: VALORANT (Format Video MP4 Lokal)      -->
+                <!-- ============================================== -->
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <div class="scrap-card" style="border-top-color: #ff3366;">
+                        <div class="cyber-tape" style="background: rgba(255, 51, 102, 0.15); border-color: #ff3366;"></div>
+                        <div class="status-stamp stamp-active" style="color: #ff3366; border-color: #ff3366; transform: rotate(-10deg);">RANKED</div>
+                        
+                        <!-- 📸 THUMBNAIL (Unsplash Placeholder) -->
+                        <div class="media-frame">
+                            <img src="https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=800&auto=format&fit=crop" alt="Valorant Thumbnail">
+                            <div class="overlay-play">
+                                <button class="btn-clean" data-bs-toggle="modal" data-bs-target="#modalVideoVal" style="border-color: #ff3366; color: #fff;">
+                                    <i class="fa-solid fa-play" style="color: #ff3366;"></i> Tonton Video
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <span class="doc-label" style="color: #ff3366;">FILE_ID: VLRNT-01 // HERO SHOOTER</span>
+                        <h3 class="game-title">VALORANT</h3>
+                        <p class="game-desc">
+                            &gt; ROLE: Controller (Omen).<br>
+                            &gt; RANK: Ascendant / Immortal.<br>
+                            &gt; LOG: Kompetitif dan butuh taktik. Pas banget buat melatih "Problem Solving" secara instan di bawah tekanan.
+                        </p>
+
+                        <div class="accordion spec-accordion" id="acc-val">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed spec-btn" type="button" data-bs-toggle="collapse" data-bs-target="#col-val" style="color: #ff3366; border-color: rgba(255,51,102,0.3);">
+                                        <i class="fa-solid fa-microchip me-2"></i> CEK SPESIFIKASI MINIMUM
+                                    </button>
+                                </h2>
+                                <div id="col-val" class="accordion-collapse collapse" data-bs-parent="#acc-val">
+                                    <div class="accordion-body spec-body">
+                                        <ul>
+                                            <li><strong style="color: #ff3366;">OS</strong> : Windows 10 (64-bit)</li>
+                                            <li><strong style="color: #ff3366;">CPU</strong> : Intel Core i3-4150 / AMD Ryzen 3 1200</li>
+                                            <li><strong style="color: #ff3366;">RAM</strong> : 4 GB (Dual Channel)</li>
+                                            <li><strong style="color: #ff3366;">VGA</strong> : GeForce GT 730 / Radeon R7 240</li>
+                                            <li><strong style="color: #ff3366;">STORAGE</strong> : 35 GB SSD Recommended</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ============================================== -->
+                <!-- GAME 3: CYBERPUNK 2077 (Tanpa Video, Hanya Gambar) -->
+                <!-- ============================================== -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <div class="scrap-card" style="border-top-color: #ffcc00;">
+                        <div class="cyber-tape" style="background: rgba(255, 204, 0, 0.15); border-color: #ffcc00;"></div>
+                        <div class="status-stamp stamp-cleared" style="color: #ffcc00; border-color: #ffcc00; transform: rotate(5deg);">CLEARED</div>
+                        
+                        <!-- Gambar tanpa tombol play -->
+                        <div class="media-frame">
+                            <img src="https://images.unsplash.com/photo-1605901302636-6bd8ff691238?q=80&w=800&auto=format&fit=crop" alt="Cyberpunk Screenshot">
+                        </div>
+                        
+                        <span class="doc-label" style="color: #ffcc00;">FILE_ID: CP2077 // RPG SCI-FI</span>
+                        <h3 class="game-title">CYBERPUNK 2077</h3>
+                        <p class="game-desc">
+                            &gt; BUILD: Netrunner / Stealth.<br>
+                            &gt; LOG: Mahakarya estetika masa depan. Sumber referensi utama untuk inspirasi desain UI/UX portofolio ini.
+                        </p>
+
+                        <div class="accordion spec-accordion" id="acc-cp">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed spec-btn" type="button" data-bs-toggle="collapse" data-bs-target="#col-cp" style="color: #ffcc00; border-color: rgba(255,204,0,0.3);">
+                                        <i class="fa-solid fa-microchip me-2"></i> CEK SPESIFIKASI MINIMUM
+                                    </button>
+                                </h2>
+                                <div id="col-cp" class="accordion-collapse collapse" data-bs-parent="#acc-cp">
+                                    <div class="accordion-body spec-body">
+                                        <ul>
+                                            <li><strong style="color: #ffcc00;">OS</strong> : Windows 10 (64-bit)</li>
+                                            <li><strong style="color: #ffcc00;">CPU</strong> : Core i7-6700 / Ryzen 5 1600</li>
+                                            <li><strong style="color: #ffcc00;">RAM</strong> : 12 GB</li>
+                                            <li><strong style="color: #ffcc00;">VGA</strong> : GTX 1060 6GB / Radeon RX 580</li>
+                                            <li><strong style="color: #ffcc00;">STORAGE</strong> : 70 GB SSD Required</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- MEGA FOOTER -->
+    <footer class="pt-5 pb-3 border-top" style="border-color: var(--border-color) !important; background-color: #0a0a0a;">
+        <div class="container">
+            <div class="row gy-4 mb-5">
+                <div class="col-lg-4 col-md-6 pe-lg-5">
+                    <h4 class="text-white font-heading mb-3" style="letter-spacing: 2px;">ARDY<span style="color: var(--accent);">PROJECT</span></h4>
+                    <p class="text-muted mb-4" style="font-size: 0.85rem; line-height: 1.7;">
+                        Mengubah ide kompleks menjadi produk digital yang intuitif dan berkinerja tinggi. Spesialis dalam arsitektur Web Frontend dan integrasi API Backend.
+                    </p>
+                </div>
+                
+                <div class="col-lg-2 col-md-6">
+                    <h5 class="text-white fs-6 mb-4 font-heading">Navigasi</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2"><a href="index.html" class="text-muted hover-white text-decoration-none small transition">Beranda Utama</a></li>
+                        <li class="mb-2"><a href="setup.html" class="text-muted hover-white text-decoration-none small transition">Setup & Gear</a></li>
+                        <li class="mb-2"><a href="gaming.html" class="text-muted hover-white text-decoration-none small transition">Gaming Log</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white fs-6 mb-4 font-heading">Pusat Data (Kontak)</h5>
+                    <ul class="list-unstyled mb-0 text-muted small">
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-location-dot" style="color: var(--accent); width: 15px;"></i> Jakarta, Indonesia</li>
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-solid fa-envelope" style="color: var(--accent); width: 15px;"></i> ardysihombing2006@gmail.com</li>
+                        <li class="mb-3 d-flex align-items-center gap-2"><i class="fa-brands fa-whatsapp" style="color: var(--accent); width: 15px;"></i> +62 831-4655-7755</li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-3 col-md-6">
+                    <h5 class="text-white fs-6 mb-4 font-heading">Sosial Jaringan</h5>
+                    <div class="d-flex gap-3">
+                        <a href="https://instagram.com/ardyhutasoit_18" target="_blank" class="icon-box-footer"><i class="fa-brands fa-instagram fs-6"></i></a>
+                        <a href="https://github.com/ArdyProject" target="_blank" class="icon-box-footer"><i class="fa-brands fa-github fs-6"></i></a>
+                        <a href="#" class="icon-box-footer"><i class="fa-brands fa-linkedin-in fs-6"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="d-md-flex justify-content-between align-items-center border-top pt-4 text-center text-md-start" style="border-color: var(--border-color) !important;">
+                <p class="text-muted mb-2 mb-md-0" style="font-size: 0.8rem;">© <span id="year"></span> ArdyProject. Open Source Environment.</p>
+                <p class="text-muted mb-0 opacity-25" style="font-size: 0.7rem; font-family: var(--font-heading);">
+                    <i class="fa-solid fa-gamepad me-1"></i> Hint: [ Press START to continue ]
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================== -->
+    <!-- 🚀 KUMPULAN MODAL POPUP VIDEO (.MP4 MURNI)     -->
+    <!-- ============================================== -->
+
+    <!-- Modal Point Blank (.mp4) -->
+    <div class="modal fade" id="modalVideoPB" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content cyber-modal">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-6"><i class="fa-solid fa-video me-2"></i>FEED: PB-ZEPETTO.MP4</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 bg-black text-center">
+                    <div class="ratio ratio-16x9">
+                        <!-- LU TINGGAL GANTI LINK SRC DI BAWAH PAKE LINK VIDEO POINT BLANK LU -->
+                        <video id="videoPB" controls>
+                            <source src="https://cdn.pixabay.com/video/2020/05/25/40141-424754714_tiny.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung tag video.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Valorant (.mp4) -->
+    <div class="modal fade" id="modalVideoVal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content cyber-modal" style="border-color: #ff3366;">
+                <div class="modal-header" style="border-bottom-color: rgba(255,51,102,0.3);">
+                    <h5 class="modal-title fs-6" style="color: #ff3366;"><i class="fa-solid fa-video me-2"></i>FEED: VALORANT-CLUTCH.MP4</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0 bg-black text-center">
+                    <div class="ratio ratio-16x9">
+                        <!-- LU TINGGAL GANTI LINK SRC DI BAWAH PAKE LINK VIDEO VALORANT LU -->
+                        <video id="videoVal" controls>
+                            <source src="https://cdn.pixabay.com/video/2021/02/25/66183-516664975_tiny.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung tag video.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        AOS.init({ duration: 600, once: true, offset: 40 });
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        if(window.innerWidth > 768) {
+            const cursorDot = document.querySelector('.cursor-dot'), cursorOutline = document.querySelector('.cursor-outline');
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX, posY = e.clientY;
+                cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+                cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 100, fill: "forwards" });
+            });
+        }
+
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const mobileMenuOverlay = document.getElementById('mobileNav');
+        
+        function toggleMobileMenu() {
+            hamburgerBtn.classList.toggle('active');
+            mobileMenuOverlay.classList.toggle('active');
+            if (mobileMenuOverlay.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        const canvas = document.getElementById('canvas-particles'), ctx = canvas.getContext('2d');
+        let width, height, particles;
+        function initParticles() {
+            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particles = [];
+            for(let i = 0; i < (window.innerWidth < 768 ? 15 : 30); i++) {
+                particles.push({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 1.5, dx: (Math.random() - 0.5) * 0.3, dy: (Math.random() - 0.5) * 0.3 });
+            }
+        }
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height); ctx.fillStyle = '#ffffff';
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+                p.x += p.dx; p.y += p.dy;
+                if(p.x < 0) p.x = width; if(p.x > width) p.x = 0; if(p.y < 0) p.y = height; if(p.y > height) p.y = 0;
+            });
+            requestAnimationFrame(drawParticles);
+        }
+        initParticles(); drawParticles(); window.addEventListener('resize', initParticles);
+
+        // ==========================================
+        // 🚀 SMART VIDEO POPUP LOGIC (.MP4)
+        // ==========================================
+        
+        // Modal & Video Point Blank
+        const modalPB = document.getElementById('modalVideoPB');
+        const videoPB = document.getElementById('videoPB');
+
+        modalPB.addEventListener('show.bs.modal', function () {
+            videoPB.play();
+        });
+        modalPB.addEventListener('hide.bs.modal', function () {
+            videoPB.pause();
+            // Opsional: videoPB.currentTime = 0; // Kalo mau di-reset ke awal pas ditutup
+        });
+
+        // Modal & Video Valorant
+        const modalVal = document.getElementById('modalVideoVal');
+        const videoVal = document.getElementById('videoVal');
+
+        modalVal.addEventListener('show.bs.modal', function () {
+            videoVal.play();
+        });
+        modalVal.addEventListener('hide.bs.modal', function () {
+            videoVal.pause();
+        });
+
+    </script>
+</body>
+</html>
+
+
+```

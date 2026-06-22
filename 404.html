@@ -1,0 +1,281 @@
+```html
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>404 - Sektor Tidak Ditemukan | ArdyProject</title>
+    <meta name="theme-color" content="#0a0a0a">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-base: #0a0a0a;
+            --accent: #00d2ff; 
+            --accent-glow: rgba(0, 210, 255, 0.4);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg-base); color: var(--text-main);
+            font-family: var(--font-body); margin: 0; overflow: hidden; /* Prevent scroll on 404 */
+            width: 100vw; height: 100vh; cursor: none;
+        }
+
+        h1, h2, h3, h4, h5, h6, .btn-clean {
+            font-family: var(--font-heading); letter-spacing: 0.5px;
+        }
+
+        a { text-decoration: none; color: var(--accent); transition: 0.3s ease; }
+        a:hover { color: #fff; cursor: none; }
+
+        /* Custom Cursor */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0; transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 9999; pointer-events: none;
+        }
+        .cursor-dot { width: 4px; height: 4px; background-color: var(--accent); }
+        .cursor-outline { width: 30px; height: 30px; border: 1px solid rgba(0, 210, 255, 0.5); transition: width 0.15s, height 0.15s; }
+        
+        /* Background & Particles */
+        #canvas-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.25; pointer-events: none; }
+        
+        .bg-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: radial-gradient(circle at center, rgba(0, 210, 255, 0.05) 0%, rgba(10, 10, 10, 1) 70%);
+        }
+
+        /* Navbar Minimalist */
+        .navbar {
+            background: transparent !important; border-bottom: none; padding: 20px 0; position: absolute; width: 100%; z-index: 10;
+        }
+        .navbar-brand { 
+            color: #fff !important; font-weight: 700; font-size: 1.2rem; letter-spacing: 2px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .navbar-brand span { color: var(--accent); }
+        .nav-logo-img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); box-shadow: 0 0 10px var(--accent-glow); }
+
+        /* Error Container */
+        .error-wrapper {
+            position: relative; z-index: 2; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; height: 100vh; text-align: center;
+            padding: 0 20px;
+        }
+
+        /* Massive 404 Glitch */
+        .glitch-404 {
+            font-size: clamp(8rem, 20vw, 15rem); /* Responsive size */
+            font-weight: 900; line-height: 1; color: #fff; position: relative;
+            margin-bottom: 0; letter-spacing: -5px;
+            text-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        .glitch-404::before, .glitch-404::after {
+            content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: transparent;
+        }
+        .glitch-404::before {
+            left: 3px; text-shadow: -2px 0 rgba(0, 210, 255, 0.7); /* Cyan glitch */
+            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        .glitch-404::after {
+            left: -3px; text-shadow: 2px 0 rgba(255, 0, 255, 0.7); /* Magenta glitch (cool, not scary) */
+            clip-path: polygon(0 80%, 100% 20%, 100% 100%, 0 100%);
+            animation: glitch-anim2 4s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); }
+            60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(50% 0 30% 0); }
+            100% { clip-path: inset(5% 0 80% 0); }
+        }
+
+        /* Floating Animation */
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Decorative Line */
+        .separator {
+            width: 100px; height: 3px; background: var(--accent); margin: 20px auto 30px;
+            box-shadow: 0 0 15px var(--accent-glow); border-radius: 2px;
+        }
+
+        /* Message Text */
+        .error-title { font-size: 1.5rem; color: #fff; font-weight: 600; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase; }
+        .error-desc { font-size: 1rem; color: var(--text-muted); max-width: 500px; margin: 0 auto 40px; line-height: 1.7; min-height: 50px; }
+        
+        .cursor-blink { animation: blink 1s step-end infinite; color: var(--accent); font-weight: bold; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* Buttons */
+        .btn-clean {
+            background: rgba(18,18,18,0.8); color: #fff; font-family: var(--font-heading); font-size: 0.85rem;
+            border: 1px solid var(--border-color); padding: 12px 25px; border-radius: 6px; transition: all 0.3s ease;
+            text-transform: uppercase; letter-spacing: 1px; cursor: none; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            backdrop-filter: blur(5px);
+        }
+        .btn-clean:hover { border-color: var(--accent); color: var(--accent); background: rgba(0, 210, 255, 0.05); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+        .btn-clean.primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+        .btn-clean.primary:hover { background: #fff; border-color: #fff; color: #000; box-shadow: 0 4px 20px var(--accent-glow); }
+
+        /* Decorative Elements */
+        .radar-icon { position: absolute; bottom: 40px; right: 40px; font-size: 3rem; color: rgba(255,255,255,0.05); animation: spin 10s linear infinite; pointer-events: none; }
+        .coords { position: absolute; bottom: 30px; left: 40px; font-family: monospace; font-size: 0.75rem; color: rgba(255,255,255,0.2); pointer-events: none; }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .radar-icon, .coords { display: none; }
+            .error-title { font-size: 1.2rem; }
+            body { overflow-y: auto; overflow-x: hidden; } /* Allow slight scroll on very small screens */
+            .error-wrapper { height: auto; min-height: 100vh; padding-top: 80px; padding-bottom: 50px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Environment -->
+    <div class="bg-overlay"></div>
+    <canvas id="canvas-particles"></canvas>
+    <div class="cursor-dot d-none d-md-block"></div>
+    <div class="cursor-outline d-none d-md-block"></div>
+
+    <i class="fa-solid fa-satellite-dish radar-icon"></i>
+    <div class="coords" id="live-coords">SYS_COORD: 0.000, 0.000<br>STATUS: LOST_IN_SPACE</div>
+
+    <!-- Minimalist Navbar -->
+    <nav class="navbar">
+        <div class="container d-flex justify-content-center justify-content-md-start">
+            <a class="navbar-brand" href="index.html">
+                <img src="https://images.unsplash.com/photo-1568602471122-7832951cc4c5?ixlib=rb-4.0.3&w=100&q=80" alt="Logo ArdyProject" class="nav-logo-img">
+                ARDY<span>PROJECT</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="error-wrapper">
+        <div data-aos="zoom-in" data-aos-duration="1000">
+            <!-- Glitch 404 -->
+            <h1 class="glitch-404" data-text="404">404</h1>
+        </div>
+        
+        <div class="separator"></div>
+
+        <h2 class="error-title text-accent">LOST IN CYBERSPACE</h2>
+        
+        <!-- Typewriter Effect Container -->
+        <p class="error-desc" id="typewriter-text"></p>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3 mt-2">
+            <a href="index.html" class="btn-clean primary gamify-click">
+                <i class="fa-solid fa-power-off"></i> Reboot ke Beranda
+            </a>
+            <a href="index.html#projects" class="btn-clean gamify-click">
+                <i class="fa-solid fa-code-branch"></i> Cek Arsip Publik
+            </a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Init AOS (jika ingin dipakai, tapi sudah pakai CSS keyframes)
+        AOS.init();
+
+        // Custom Cursor
+        if(window.innerWidth > 768) {
+            const cursorDot = document.querySelector('.cursor-dot'), cursorOutline = document.querySelector('.cursor-outline');
+            window.addEventListener('mousemove', (e) => {
+                const posX = e.clientX, posY = e.clientY;
+                cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+                cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 100, fill: "forwards" });
+            });
+        }
+
+        // Particle Background (Sama dengan index, menjaga konsistensi)
+        const canvas = document.getElementById('canvas-particles'), ctx = canvas.getContext('2d');
+        let width, height, particles;
+        function initParticles() {
+            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particles = [];
+            for(let i = 0; i < (window.innerWidth < 768 ? 20 : 50); i++) {
+                particles.push({ x: Math.random() * width, y: Math.random() * height, r: Math.random() * 1.5, dx: (Math.random() - 0.5) * 0.4, dy: (Math.random() - 0.5) * 0.4 });
+            }
+        }
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height); ctx.fillStyle = '#ffffff';
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+                p.x += p.dx; p.y += p.dy;
+                if(p.x < 0) p.x = width; if(p.x > width) p.x = 0; if(p.y < 0) p.y = height; if(p.y > height) p.y = 0;
+            });
+            requestAnimationFrame(drawParticles);
+        }
+        initParticles(); drawParticles(); window.addEventListener('resize', initParticles);
+
+        // Typing Effect untuk Pesan Error
+        const textToType = "Sistem gagal melacak koordinat file yang Anda tuju. Halaman mungkin telah dihapus, pindah server, atau Anda salah memasukkan endpoint API.";
+        const typeContainer = document.getElementById('typewriter-text');
+        let charIndex = 0;
+
+        function typeErrorMsg() {
+            if (charIndex < textToType.length) {
+                // Tambahkan karakter satu per satu
+                typeContainer.innerHTML = textToType.substring(0, charIndex + 1) + '<span class="cursor-blink">_</span>';
+                charIndex++;
+                // Kecepatan ketik acak biar kaya ngetik beneran
+                setTimeout(typeErrorMsg, Math.random() * 30 + 20); 
+            } else {
+                // Kalau selesai, sisakan cursor berkedip
+                typeContainer.innerHTML = textToType + '<span class="cursor-blink">_</span>';
+            }
+        }
+        
+        // Mulai ngetik setelah delay dikit
+        setTimeout(typeErrorMsg, 800);
+
+        // Fake Coordinates Updater (Buat dekorasi di pojok kiri bawah)
+        const coordsElement = document.getElementById('live-coords');
+        if(coordsElement) {
+            setInterval(() => {
+                const x = (Math.random() * 1000).toFixed(3);
+                const y = (Math.random() * 1000).toFixed(3);
+                coordsElement.innerHTML = `SYS_COORD: ${x}, ${y}<br>STATUS: OFFLINE_MODE`;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
+
+```
